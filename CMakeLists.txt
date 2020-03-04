@@ -82,7 +82,7 @@ install(TARGETS fitpackpp fitpack
 )
 install(
     DIRECTORY fitpackpp/
-    DESTINATION include
+    DESTINATION include/fitpackpp
     FILES_MATCHING PATTERN "*.h"
 )
 install(
