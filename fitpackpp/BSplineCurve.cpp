@@ -30,14 +30,14 @@
 
 #include "BSplineCurve.h"
 
-#include "FCMangle.h"
+#include "fitpack_fc.h"
 
 using namespace fitpackpp;
 
 extern "C" {
-	void curfit(int *iopt, int *m, double *x, double *y, double *w, double *xb, double *xe, int *k, double *s, int *nest, int *n, double *t, double *c, double *fp, double *wrk, int *lwrk, int *iwrk, int *ier);
-	void splev (double *t, int *n, double *c, int *k, double *x, double *y, int *m, int *e, int *ier);
-	void splder(double *t, int *n, double *c, int *k, int *nu, double *x, double *y, int *m, int *e, double *wrk, int *ier);
+	void fitpack_curfit(int *iopt, int *m, double *x, double *y, double *w, double *xb, double *xe, int *k, double *s, int *nest, int *n, double *t, double *c, double *fp, double *wrk, int *lwrk, int *iwrk, int *ier);
+	void fitpack_splev (double *t, int *n, double *c, int *k, double *x, double *y, int *m, int *e, int *ier);
+	void fitpack_splder(double *t, int *n, double *c, int *k, int *nu, double *x, double *y, int *m, int *e, double *wrk, int *ier);
 }
 
 /**
@@ -89,7 +89,7 @@ BSplineCurve::BSplineCurve(std::vector<double> &x, std::vector<double> &y, int p
 	std::fill(iwrk, iwrk + nest, 0);
 
 	int ier = 0;
-	curfit(&iopt, &m, (double*) &x[0], (double*) &y[0], w, &x[0], &x[m - 1], &k, &smoothing, &nest, &n, t, c, &fp, wrk, &lwrk, iwrk, &ier);
+	fitpack_curfit(&iopt, &m, (double*) &x[0], (double*) &y[0], w, &x[0], &x[m - 1], &k, &smoothing, &nest, &n, t, c, &fp, wrk, &lwrk, iwrk, &ier);
 	if (ier > 0) {
 		if (ier >= 10) {
 			std::stringstream s;
@@ -240,7 +240,7 @@ double BSplineCurve::eval(double x)
 	int ier = 0;
 
 	// splev also evaluates points in the exterior
-	splev(t, &n, c, &k, &x, &y, &m, &e, &ier);
+	fitpack_splev(t, &n, c, &k, &x, &y, &m, &e, &ier);
 	if (ier > 0) {
 		std::stringstream s;
 		s << "Error evaluating B-Spline curve using splev() at point " << x << ": " << ier;
@@ -275,7 +275,7 @@ double BSplineCurve::der(double x, int order)
 	int ier = 0;
 
 	// splder also evaluates points in the exterior
-	splder(t, &n, c, &k, &order, &x, &y, &m, &e, wder, &ier);
+	fitpack_splder(t, &n, c, &k, &order, &x, &y, &m, &e, wder, &ier);
 	if (ier > 0) {
 		std::stringstream s;
 		s << "Error evaluating order " << order << " B-Spline curve derivative using splder() at point " << x << ": " << ier;

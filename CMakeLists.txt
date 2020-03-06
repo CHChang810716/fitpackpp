@@ -38,9 +38,9 @@ add_library(fitpack ${fitpack_SRC})
 
 # C++ interface
 include(FortranCInterface)
-FortranCInterface_HEADER(FCMangle.h
-                         MACRO_NAMESPACE "FC_"
-                         SYMBOL_NAMESPACE ""
+FortranCInterface_HEADER(fitpack_fc.h
+                         MACRO_NAMESPACE "FITPACK_FC_"
+                         SYMBOL_NAMESPACE "fitpack_"
                          SYMBOLS curfit splev splder surfit bispev parder)
 FortranCInterface_VERIFY(CXX)
 
@@ -84,6 +84,10 @@ install(
     DIRECTORY fitpackpp/
     DESTINATION include/fitpackpp
     FILES_MATCHING PATTERN "*.h"
+)
+install(
+    FILES build/fitpack_fc.h
+    DESTINATION include
 )
 install(
     FILES       "${project_config}" "${version_config}"
