@@ -86,7 +86,7 @@ install(
     FILES_MATCHING PATTERN "*.h"
 )
 install(
-    FILES build/fitpack_fc.h
+    FILES ${CMAKE_BINARY_DIR}/fitpack_fc.h
     DESTINATION include
 )
 install(
